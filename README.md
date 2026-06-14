@@ -2,198 +2,459 @@
 
 ## Overview
 
-This project is an end-to-end SQL analytics solution built using PostgreSQL to analyze customer behavior, subscription activity, product usage, payment history, and churn risk.
+This project is an end-to-end SQL analytics solution built using PostgreSQL and Tableau to analyze customer behavior, subscription activity, product usage, payment history, support interactions, and churn risk.
 
-The goal is to help a subscription-based business identify customers at risk of leaving, estimate revenue exposure, and support data-driven retention strategies.
+The objective is to identify customers at risk of leaving, estimate revenue exposure, and provide actionable insights that help business stakeholders improve customer retention and recurring revenue.
 
 ---
 
 ## Business Problem
 
-Customer churn directly impacts revenue and growth.
+Customer churn directly impacts revenue and long-term business growth.
 
-Business stakeholders want answers to the following questions:
+Business stakeholders need answers to critical questions such as:
 
 - Which customers are most likely to churn?
 - How much revenue is at risk?
 - Which subscription plans have the highest risk?
-- Which cities contain the largest number of high-risk customers?
-- Which customers should be prioritized by retention teams?
+- Which cities contain the highest concentration of risky customers?
+- Which customers should retention teams prioritize?
+- What operational factors contribute to churn?
 
 ---
 
+## Project Metrics
 
-## Key Results
+| Metric | Value |
+|----------|----------|
+| Customers | 10,000 |
+| Subscriptions | 10,000 |
+| Payments | 100,000 |
+| Usage Logs | 300,000 |
+| Support Tickets | 50,000 |
+| Total Records Analyzed | 480,000+ |
+| Churn Rate | 20.69% |
+| Revenue Generated | ₹80M+ |
+| Revenue from Churned Customers | ₹16M+ |
 
-- Customers analyzed: 10,000
-- Payments analyzed: 100,000
-- Usage events analyzed: 300,000
-- Churn rate: 20.69%
-- Revenue generated: ₹80.04M
-- Revenue from churned customers: ₹16.64M
+---
+
+## Dashboard Preview
+
+### Executive Dashboard
+
+![Executive Dashboard](screenshots/executive-dashboard.png)
+
+### Customer Health Dashboard
+
+![Customer Health](screenshots/customer-health.png)
+
+### Revenue At Risk Dashboard
+
+![Revenue At Risk](screenshots/revenue-at-risk.png)
+
+### Entity Relationship Diagram
+
+![ERD](screenshots/erd.png)
+
+---
 
 ## Project Architecture
 
 ```text
-customers
+Raw Data Layer
+│
+├── customers
 ├── subscriptions
 ├── payments
 ├── usage_logs
 ├── support_tickets
 └── customer_churn
-
-customer_health (VIEW)
         │
         ▼
-executive_dashboard (VIEW)
+Data Quality Layer
+        │
+        ▼
+Analytics Views
+│
+├── customer_health
+├── customer_360
+└── executive_dashboard
+        │
+        ▼
+KPI Reporting Layer
+│
+├── Revenue KPIs
+├── Churn KPIs
+├── Customer Health KPIs
+└── Support Ticket Analytics
+        │
+        ▼
+Tableau Dashboards
+        │
+        ▼
+Business Recommendations
 ```
 
 ---
 
-## Dataset Scale
+## Database Design
 
-| Table | Records |
-|---------|---------:|
-| Customers | 10,000 |
-| Subscriptions | 10,000 |
-| Payments | 100,000 |
-| Usage Logs | 300,000 |
-| Customer Churn | 10,000 |
+The project uses a relational database design implemented in PostgreSQL.
 
-**Total Records Analyzed:** 430,000+
+### Core Tables
 
----
+#### customers
 
-## Database Schema
+Stores customer demographic and account information.
 
-### Customers
-Stores customer demographic information.
-
-### Subscriptions
-Stores subscription plan and pricing details.
-
-### Payments
-Stores customer payment history and transaction status.
-
-### Usage Logs
-Stores product usage activity and engagement metrics.
-
-### Customer Churn
-Stores churn labels used for retention analysis.
+| Column |
+|----------|
+| customer_id |
+| customer_name |
+| email |
+| age |
+| gender |
+| city |
+| country |
+| join_date |
 
 ---
 
+#### subscriptions
 
-## Dashboard Preview
+Stores subscription plans and pricing information.
 
-### Executive Overview
+| Column |
+|----------|
+| subscription_id |
+| customer_id |
+| plan_name |
+| monthly_fee |
+| start_date |
+| end_date |
 
-![Executive Overview](screenshots/executive-dashboard.png)
+---
 
-### Customer Health
+#### payments
 
-![Customer Health](screenshots/customer-health.png)
+Stores customer payment history.
 
-### Revenue At Risk
+| Column |
+|----------|
+| payment_id |
+| customer_id |
+| payment_date |
+| amount |
+| payment_status |
 
-![Revenue At Risk](screenshots/revenue-at-risk.png)
+---
 
+#### usage_logs
 
+Stores customer product engagement data.
 
+| Column |
+|----------|
+| usage_id |
+| customer_id |
+| activity_date |
+| login_count |
+| minutes_used |
 
-customers
-    |
-    ├── subscriptions
-    ├── payments
-    ├── usage_logs
-    ├── support_tickets
-    └── customer_churn
+---
 
-## SQL Concepts Used
+#### support_tickets
 
-- Primary Keys
-- Foreign Keys
-- Joins
-- Aggregations
+Stores customer support interactions.
+
+| Column |
+|----------|
+| ticket_id |
+| customer_id |
+| ticket_date |
+| issue_type |
+| ticket_status |
+
+---
+
+#### customer_churn
+
+Stores churn labels.
+
+| Column |
+|----------|
+| customer_id |
+| churned |
+
+---
+
+## Analytics Layer
+
+### customer_health View
+
+A reusable analytics view that aggregates:
+
+- Total product usage
+- Failed payment count
+- Customer engagement metrics
+
+Purpose:
+
+- Customer health monitoring
+- Retention analysis
+- Risk classification
+
+---
+
+### customer_360 View
+
+Creates a complete customer profile by combining:
+
+- Customer information
+- Subscription data
+- Usage behavior
+- Payment performance
+- Churn status
+
+Purpose:
+
+- Customer-level analytics
+- Executive reporting
+- Segmentation
+
+---
+
+### executive_dashboard View
+
+Central reporting layer used by Tableau dashboards.
+
+Includes:
+
+- Risk level
+- Usage metrics
+- Failed payments
+- Subscription plan
+- Revenue contribution
+- Churn information
+
+---
+
+## SQL Concepts Demonstrated
+
+This project demonstrates:
+
+### SQL Fundamentals
+
+- SELECT
+- WHERE
+- ORDER BY
 - GROUP BY
+- HAVING
+
+### Intermediate SQL
+
+- INNER JOIN
+- LEFT JOIN
 - CASE Statements
+- Aggregate Functions
+- Subqueries
+
+### Advanced SQL
+
 - Common Table Expressions (CTEs)
 - Views
-- Window Functions (`RANK`)
-- Data Modeling
-- Business KPI Analysis
+- Window Functions
+- RANK()
+- Business KPI Calculations
+
+### Data Engineering Concepts
+
+- Relational Modeling
+- Foreign Key Relationships
+- Data Quality Validation
+- Analytics Layer Design
+- Data Mart Creation
 
 ---
 
-## Customer Health Model
+## Data Quality Checks
 
-A reusable SQL view was created to calculate customer health metrics.
+The project includes data validation scripts for:
 
-Metrics include:
+- Duplicate customers
+- Missing values
+- Invalid payment amounts
+- Invalid subscription fees
+- Data consistency checks
 
-- Total Product Usage
-- Failed Payments
-- Customer Risk Classification
+Purpose:
 
-Risk Categories:
-
-- High Risk
-- Medium Risk
-- Low Risk
-
----
-
-## Executive Dashboard View
-
-The executive dashboard view combines customer health data with subscription and churn information.
-
-Business stakeholders can use it to:
-
-- Identify high-risk customers
-- Estimate revenue at risk
-- Monitor customer engagement
-- Support retention campaigns
+- Improve reporting accuracy
+- Ensure reliable analytics
 
 ---
 
-## Key Business Metrics
+## KPI Reporting
 
-### Churn Rate
+### Revenue KPIs
 
-Measures the percentage of customers who have churned.
+Measures:
 
-### Revenue at Risk
-
-Estimates potential revenue loss from high-risk customer segments.
-
-### Customer Health Score
-
-Identifies customers requiring intervention.
-
-### Subscription Performance
-
-Analyzes plan-level customer behavior and engagement.
+- Total Revenue
+- Successful Payment Revenue
+- Revenue by Plan
+- Revenue by Customer Segment
 
 ---
 
-## Technologies Used
+### Churn KPIs
 
-- PostgreSQL
-- SQL
-- Git
-- GitHub
-- Power BI
+Measures:
+
+- Churn Rate
+- Churned Customers
+- Revenue from Churned Customers
 
 ---
 
-## Sample Analytics Questions Answered
+### Customer Health KPIs
 
-- What is the overall churn rate?
-- How much revenue comes from churned customers?
-- Which cities generate the highest usage?
-- Which customers are most at risk of churn?
-- Which subscription plans have the highest revenue exposure?
-- Who are the top customers that should be targeted for retention?
+Measures:
+
+- High Risk Customers
+- Medium Risk Customers
+- Low Risk Customers
+- Customer Engagement Levels
+
+---
+
+### Support Analytics
+
+Measures:
+
+- Most Common Customer Issues
+- Ticket Volume by Issue Type
+- Support Trends
+
+---
+
+## Tableau Dashboards
+
+### Executive Dashboard
+
+Provides:
+
+- Revenue Overview
+- Churn Overview
+- Revenue by City
+- Revenue by Risk Level
+
+---
+
+### Customer Health Dashboard
+
+Provides:
+
+- Customer Risk Distribution
+- Usage Analysis
+- Failed Payment Analysis
+- High Risk Customer Identification
+
+---
+
+### Revenue At Risk Dashboard
+
+Provides:
+
+- Revenue Exposure
+- Revenue at Risk by City
+- High Risk Customer Segments
+- Retention Prioritization
+
+---
+
+## Key Business Findings
+
+### Finding 1
+
+Customer churn rate is approximately 20.69%.
+
+Business Impact:
+
+A significant portion of customers leave the platform, affecting recurring revenue.
+
+---
+
+### Finding 2
+
+Failed payments are associated with elevated customer risk levels.
+
+Business Impact:
+
+Improving payment recovery processes may reduce churn.
+
+---
+
+### Finding 3
+
+Customer engagement levels vary significantly.
+
+Business Impact:
+
+Declining product usage can be used as an early churn indicator.
+
+---
+
+### Finding 4
+
+Revenue exposure can be quantified by identifying high-risk customers.
+
+Business Impact:
+
+Retention efforts can be prioritized toward customers with the highest revenue contribution.
+
+---
+
+## Business Recommendations
+
+### Recommendation 1
+
+Target High-Risk Customers
+
+- Create retention campaigns
+- Offer incentives
+- Increase engagement outreach
+
+---
+
+### Recommendation 2
+
+Improve Payment Recovery
+
+- Automated payment retries
+- Customer payment reminders
+- Alternative payment methods
+
+---
+
+### Recommendation 3
+
+Monitor Product Usage
+
+- Track declining engagement
+- Trigger proactive interventions
+- Improve onboarding experiences
+
+---
+
+### Recommendation 4
+
+Improve Customer Support
+
+- Faster ticket resolution
+- Better issue tracking
+- Root-cause analysis
 
 ---
 
@@ -210,27 +471,55 @@ customer-churn-analytics/
 │
 ├── analytics/
 │   ├── customer_health.sql
-│   └── executive_dashboard.sql
+│   ├── customer_360.sql
+│   ├── executive_dashboard.sql
+│   ├── data_quality_checks.sql
+│   ├── support_ticket_analysis.sql
+│   ├── kpi_revenue.sql
+│   ├── kpi_churn.sql
+│   └── kpi_customer_health.sql
 │
-├── dashboard/
+├── docs/
+│   ├── architecture.md
+│   ├── data_dictionary.md
+│   ├── business_case_study.md
+│   ├── executive_summary.md
+│   ├── project_summary.md
+│   ├── recommendations.md
+│   └── erd.md
 │
 ├── screenshots/
+│   ├── executive-dashboard.png
+│   ├── customer-health.png
+│   ├── revenue-at-risk.png
+│   └── erd.png
 │
 └── README.md
 ```
 
 ---
 
-## Future Improvements
+## Technologies Used
 
-- Advanced churn prediction using Python
-- Customer lifetime value (CLV) analysis
+- PostgreSQL
+- SQL
+- Tableau Public
+- Git
+- GitHub
+
+---
+
+## Future Enhancements
+
+- Python-based churn prediction
+- Customer Lifetime Value (CLV) analysis
 - Automated ETL pipelines
-- Real-time dashboard integration
-- Predictive customer segmentation
+- Real-time dashboard refresh
+- Machine Learning risk scoring
+- Cloud deployment
 
 ---
 
 ## Author
 
-Built as a portfolio project to demonstrate SQL, data modeling, business analytics, and customer retention analysis skills.
+Built as an end-to-end analytics portfolio project demonstrating SQL, PostgreSQL, business intelligence, data modeling, customer analytics, churn analysis, KPI reporting, dashboard development, and business case study documentation.
