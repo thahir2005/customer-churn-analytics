@@ -22,6 +22,16 @@ Business stakeholders want answers to the following questions:
 
 ---
 
+
+## Key Results
+
+- Customers analyzed: 10,000
+- Payments analyzed: 100,000
+- Usage events analyzed: 300,000
+- Churn rate: 20.69%
+- Revenue generated: ₹80.04M
+- Revenue from churned customers: ₹16.64M
+
 ## Project Architecture
 
 ```text
@@ -72,6 +82,32 @@ Stores product usage activity and engagement metrics.
 Stores churn labels used for retention analysis.
 
 ---
+
+
+## Dashboard Preview
+
+### Executive Overview
+
+![Executive Overview](screenshots/executive-dashboard.png)
+
+### Customer Health
+
+![Customer Health](screenshots/customer-health.png)
+
+### Revenue At Risk
+
+![Revenue At Risk](screenshots/revenue-at-risk.png)
+
+
+
+
+customers
+    |
+    ├── subscriptions
+    ├── payments
+    ├── usage_logs
+    ├── support_tickets
+    └── customer_churn
 
 ## SQL Concepts Used
 
